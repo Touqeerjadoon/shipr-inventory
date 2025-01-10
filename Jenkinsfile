@@ -12,16 +12,18 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git(
-                    url: 'https://github.com/Touqeerjadoon/shipr-inventory.git',
-                    credentialsId: '240a9f71-d6eb-4bee-af7b-1b6e106f2d18',
-                    branch: "${params.BRANCH}"
-                )
+                script {
+                    def branchName = "${params.BRANCH}".replace("origin/", "")
+                    git(
+                        url: 'https://github.com/Touqeerjadoon/shipr-inventory.git',
+                        credentialsId: '240a9f71-d6eb-4bee-af7b-1b6e106f2d18',
+                        branch: branchName // Use the branch name
+                    )
+                }
             }
         }
         stage('Build Docker Image') {
             steps {
-                // Use double quotes for proper variable substitution
                 sh "docker build -t ${env.DOCKER_IMAGE}:${params.BRANCH} ."
             }
         }
@@ -32,7 +34,6 @@ pipeline {
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASSWORD'
                 )]) {
-                    // Use double quotes for proper variable substitution
                     sh """
                         echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USER} --password-stdin
                         docker push ${env.DOCKER_IMAGE}:${params.BRANCH}
