@@ -21,7 +21,8 @@ pipeline {
         }
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t ${DOCKER_IMAGE}:${params.BRANCH} .'
+                // Use double quotes for proper variable substitution
+                sh "docker build -t ${env.DOCKER_IMAGE}:${params.BRANCH} ."
             }
         }
         stage('Push Docker Image') {
@@ -31,8 +32,11 @@ pipeline {
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASSWORD'
                 )]) {
-                    sh 'echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USER} --password-stdin'
-                    sh 'docker push ${DOCKER_IMAGE}:${params.BRANCH}'
+                    // Use double quotes for proper variable substitution
+                    sh """
+                        echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USER} --password-stdin
+                        docker push ${env.DOCKER_IMAGE}:${params.BRANCH}
+                    """
                 }
             }
         }
