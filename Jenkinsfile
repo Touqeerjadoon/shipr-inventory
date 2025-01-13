@@ -7,7 +7,9 @@ pipeline {
         gitParameter name: 'BRANCH',
                      type: 'PT_BRANCH',
                      defaultValue: 'develop',
-                     description: 'Select the branch to build and deploy'
+                     description: 'Select the branch to build and deploy',
+                     branchFilter: 'origin/(.*)', // Add this line to filter out 'origin/'
+                     selectedValue: 'DEFAULT'
     }
     stages {
         stage('Checkout') {
