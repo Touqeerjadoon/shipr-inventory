@@ -8,20 +8,17 @@ pipeline {
                      type: 'PT_BRANCH',
                      defaultValue: 'develop',
                      description: 'Select the branch to build and deploy',
-                     branchFilter: 'origin/(.*)', // Add this line to filter out 'origin/'
+                     branchFilter: '.*', // Match all branches directly
                      selectedValue: 'DEFAULT'
     }
     stages {
         stage('Checkout') {
             steps {
-                script {
-                    def branchName = "${params.BRANCH}".replace("origin/", "")
-                    git(
-                        url: 'https://github.com/Touqeerjadoon/shipr-inventory.git',
-                        credentialsId: '240a9f71-d6eb-4bee-af7b-1b6e106f2d18',
-                        branch: branchName // Use the branch name
-                    )
-                }
+                git(
+                    url: 'https://github.com/Touqeerjadoon/shipr-inventory.git',
+                    credentialsId: '240a9f71-d6eb-4bee-af7b-1b6e106f2d18',
+                    branch: "${params.BRANCH}"
+                )
             }
         }
         stage('Build Docker Image') {
