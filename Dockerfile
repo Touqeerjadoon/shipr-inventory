@@ -33,7 +33,7 @@ USER appuser
 COPY . .
 
 # Expose the port the app runs on
-EXPOSE 8001
+EXPOSE 8000
 
 # Run the application
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8001"]
